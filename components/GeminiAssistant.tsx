@@ -13,7 +13,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
   const [activeTab, setActiveTab] = useState<'chat' | 'quiz'>('chat');
   // Chat State
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'model', text: 'مرحباً بك! أنا مساعد صيدليات المتحدة الذكي. كيف يمكنني مساعدتك في نظام LMS اليوم؟' }
+    { role: 'model', text: 'مرحباً بك! أنا المساعد الآلي لصيدليات المتحدة. ابحث عن أي خطوة أو معلومة وسأساعدك فوراً.' }
   ]);
   const [input, setInput] = useState('');
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -57,9 +57,10 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
   };
 
   const handleGenerateQuiz = async () => {
-    if (!quizInput.trim() || isQuizLoading) return;
+    if (isQuizLoading) return;
     setIsQuizLoading(true);
-    const questions = await generateQuizQuestions(quizInput);
+    // Note: In local mode, we ignore the text input and fetch relevant topic quizzes
+    const questions = await generateQuizQuestions(quizInput, currentTopic);
     setGeneratedQuiz(questions);
     setIsQuizLoading(false);
   };
@@ -111,7 +112,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
               <Sparkles size={20} />
             </div>
             <div>
-              <h3 className="font-bold">المساعد الذكي</h3>
+              <h3 className="font-bold">المساعد الذكي (Offline)</h3>
               <p className="text-xs text-teal-100 opacity-90">Context: {currentTopic.title}</p>
             </div>
           </div>
@@ -135,7 +136,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
             onClick={() => setActiveTab('quiz')}
             className={`flex-1 py-3 text-sm font-medium flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'quiz' ? 'border-purple-500 text-purple-600 dark:text-purple-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
           >
-            <BrainCircuit size={16} /> صانع الاختبارات
+            <BrainCircuit size={16} /> الاختبارات
           </button>
         </div>
 
@@ -152,7 +153,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
                 >
                   <div
                     className={`
-                  max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed shadow-sm
+                  max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed shadow-sm whitespace-pre-wrap
                   ${msg.role === 'user'
                         ? 'bg-teal-600 text-white rounded-br-none'
                         : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-bl-none'
@@ -167,7 +168,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
                 <div className="flex justify-start">
                   <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-2">
                     <Loader2 size={16} className="animate-spin text-teal-600" />
-                    <span className="text-xs text-slate-500 dark:text-slate-400">جاري الكتابة...</span>
+                    <span className="text-xs text-slate-500 dark:text-slate-400">جاري البحث...</span>
                   </div>
                 </div>
               )}
@@ -179,27 +180,20 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
           {activeTab === 'quiz' && (
             <div className="p-6 space-y-6">
               <div className="space-y-2">
-                <label className="text-sm font-bold text-slate-700 dark:text-slate-300">أدخل النص التعليمي:</label>
-                <textarea
-                  value={quizInput}
-                  onChange={(e) => setQuizInput(e.target.value)}
-                  placeholder="الصق هنا نصاً من منهج الصيدلة وسأقوم بتوليد أسئلة MCQ..."
-                  className="w-full h-32 p-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-800 dark:text-white focus:ring-2 focus:ring-purple-200 outline-none resize-none text-sm"
-                />
-                <div className="flex justify-between">
-                  <button
-                    onClick={startListening}
-                    className={`p-2 rounded-full transition-colors ${isListening ? 'bg-red-100 text-red-600' : 'bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-slate-200'}`}
-                  >
-                    <Mic size={18} />
-                  </button>
+                <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-xl border border-purple-100 dark:border-purple-800 mb-4">
+                  <p className="text-sm text-purple-800 dark:text-purple-300">
+                    سيقوم النظام بتوليد أسئلة اختبار بناءً على محتوى القسم الحالي: <strong>{currentTopic.title}</strong>
+                  </p>
+                </div>
+                
+                <div className="flex justify-center">
                   <button
                     onClick={handleGenerateQuiz}
-                    disabled={isQuizLoading || !quizInput.trim()}
-                    className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-bold disabled:opacity-50 flex items-center gap-2"
+                    disabled={isQuizLoading}
+                    className="w-full bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-xl text-base font-bold disabled:opacity-50 flex items-center justify-center gap-2 transition-all shadow-md hover:shadow-lg"
                   >
-                    {isQuizLoading ? <Loader2 size={16} className="animate-spin" /> : <Sparkles size={16} />}
-                    توليد الأسئلة
+                    {isQuizLoading ? <Loader2 size={20} className="animate-spin" /> : <Sparkles size={20} />}
+                    بدء الاختبار
                   </button>
                 </div>
               </div>
@@ -207,20 +201,16 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
               {generatedQuiz.length > 0 && (
                 <div className="space-y-4 animate-fade-in-up">
                   <div className="flex items-center justify-between">
-                    <h4 className="font-bold text-slate-800 dark:text-white">الأسئلة المقترحة:</h4>
-                    <button
-                      onClick={() => navigator.clipboard.writeText(JSON.stringify(generatedQuiz, null, 2))}
-                      className="text-xs text-purple-600 hover:underline"
-                    >
-                      نسخ JSON
-                    </button>
+                    <h4 className="font-bold text-slate-800 dark:text-white">أسئلة القسم:</h4>
                   </div>
                   {generatedQuiz.map((q, idx) => (
                     <div key={idx} className="bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 p-4 rounded-xl shadow-sm">
-                      <p className="font-bold text-slate-700 dark:text-slate-200 mb-2 text-sm">{idx + 1}. {q.question}</p>
-                      <ul className="space-y-1">
+                      <p className="font-bold text-slate-700 dark:text-slate-200 mb-3 text-sm leading-relaxed">{idx + 1}. {q.question}</p>
+                      <ul className="space-y-2">
                         {q.options.map((opt, i) => (
-                          <li key={i} className={`text-xs px-2 py-1 rounded ${opt === q.correctAnswer ? 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'text-slate-500 dark:text-slate-400'}`}>
+                          <li key={i} className={`text-sm px-3 py-2 rounded-lg border transition-colors ${opt === q.correctAnswer 
+                            ? 'bg-green-50 border-green-200 text-green-800 dark:bg-green-900/30 dark:border-green-800 dark:text-green-300' 
+                            : 'bg-slate-50 border-slate-100 text-slate-600 dark:bg-slate-800/50 dark:border-slate-700 dark:text-slate-400'}`}>
                             {opt === q.correctAnswer && "✅ "} {opt}
                           </li>
                         ))}
@@ -250,7 +240,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
-                placeholder="اسأل عن الكورسات..."
+                placeholder="ابحث في الدليل..."
                 className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white focus:border-teal-500 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-900 outline-none transition-all bg-slate-50"
                 disabled={isChatLoading}
               />

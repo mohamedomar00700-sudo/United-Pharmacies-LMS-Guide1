@@ -39,6 +39,23 @@ export const TOPICS: TopicData[] = [
     ],
     tips: [
       "استخدم أسماء ملفات واضحة تحتوي على تاريخ ونوع المحتوى لتسهيل البحث لاحقاً."
+    ],
+    quizzes: [
+      {
+        question: "ما هي أول خطوة لرفع ملف جديد؟",
+        options: ["حذف الكورس", "تسجيل الدخول واختيار الكورس", "إغلاق المتصفح", "إرسال بريد إلكتروني"],
+        correctAnswer: "تسجيل الدخول واختيار الكورس"
+      },
+      {
+        question: "ما هي أنواع الملفات المدعومة؟",
+        options: ["PDF و Video و PPT", "صور فقط", "ملفات صوتية فقط", "لا يمكن رفع ملفات"],
+        correctAnswer: "PDF و Video و PPT"
+      },
+      {
+        question: "ماذا تفعل بعد رفع الملف؟",
+        options: ["الخروج مباشرة", "الضغط على Save & Publish", "إطفاء الجهاز", "حذف الملف"],
+        correctAnswer: "الضغط على Save & Publish"
+      }
     ]
   },
   {
@@ -67,6 +84,18 @@ export const TOPICS: TopicData[] = [
     ],
     tips: [
       "قسم الكورس لوحدات صغيرة (Micro-learning) لتسهيل التعلم وزيادة التركيز."
+    ],
+    quizzes: [
+      {
+        question: "كيف يمكنك تغيير ترتيب الوحدات الدراسية؟",
+        options: ["إعادة كتابة الكورس", "خاصية السحب والإفلات (Drag & Drop)", "الاتصال بالدعم الفني", "لا يمكن التغيير"],
+        correctAnswer: "خاصية السحب والإفلات (Drag & Drop)"
+      },
+      {
+        question: "ما الفائدة من تقسيم الكورس لوحدات صغيرة؟",
+        options: ["تسهيل التعلم وزيادة التركيز", "زيادة صعوبة الكورس", "إضاعة الوقت", "لا توجد فائدة"],
+        correctAnswer: "تسهيل التعلم وزيادة التركيز"
+      }
     ]
   },
   {
@@ -95,6 +124,23 @@ export const TOPICS: TopicData[] = [
     ],
     tips: [
       "ادمج أسئلة سهلة ومتوسطة وصعبة لتقييم شامل وموضوعي لمستوى الموظف."
+    ],
+    quizzes: [
+      {
+        question: "ما هي الخاصية التي تقوم بخلط الأسئلة للمتدربين؟",
+        options: ["Mixer", "Randomization", "Shuffling", "Mixing"],
+        correctAnswer: "Randomization"
+      },
+      {
+        question: "كيف يمكن إعادة استخدام أسئلة سابقة؟",
+        options: ["كتابتها مرة أخرى", "Question Bank", "Copy Paste", "تصوير الشاشة"],
+        correctAnswer: "Question Bank"
+      },
+      {
+        question: "ما نوع التقييم الذي يصحح الإجابات فوراً؟",
+        options: ["Manual", "Automatic", "Teacher Review", "Slow"],
+        correctAnswer: "Automatic"
+      }
     ]
   },
   {
@@ -121,6 +167,18 @@ export const TOPICS: TopicData[] = [
     ],
     tips: [
       "استخدم Pivot Table في Excel بعد التصدير لتحليل البيانات بشكل أسرع وأدق."
+    ],
+    quizzes: [
+      {
+        question: "ما الصيغ التي يمكن تصدير التقارير إليها؟",
+        options: ["MP4 و MP3", "PDF و Excel", "JPEG و PNG", "EXE"],
+        correctAnswer: "PDF و Excel"
+      },
+      {
+        question: "أي تقرير يوضح نسب إنجاز الموظفين للكورس؟",
+        options: ["Participation", "Completion", "Logs", "Grades"],
+        correctAnswer: "Completion"
+      }
     ]
   },
   {
@@ -143,6 +201,18 @@ export const TOPICS: TopicData[] = [
     ],
     tips: [
       "استخدم Groups (المجموعات) لتسهيل إدارة الأقسام المختلفة في الصيدليات."
+    ],
+    quizzes: [
+      {
+        question: "ما هي الخطوة الأولى لإضافة موظف للكورس؟",
+        options: ["Delete User", "Enroll Users", "Block User", "Edit Profile"],
+        correctAnswer: "Enroll Users"
+      },
+      {
+        question: "لتسهيل إدارة الأقسام المختلفة، نستخدم:",
+        options: ["Groups (المجموعات)", "Tags", "Files", "Folders"],
+        correctAnswer: "Groups (المجموعات)"
+      }
     ]
   },
   {
@@ -159,17 +229,18 @@ export const TOPICS: TopicData[] = [
     faq: [],
     tips: [
       "دائماً تأكد من مسح الـ Cache للمتصفح إذا واجهت مشاكل في العرض."
+    ],
+    quizzes: [
+      {
+        question: "ما هو نوع الفيديو المفضل لضمان عمله؟",
+        options: ["AVI", "MP4", "MOV", "FLV"],
+        correctAnswer: "MP4"
+      },
+      {
+        question: "إذا لم يظهر الكورس للمستخدم، ماذا يجب أن تتحقق؟",
+        options: ["سرعة النت", "الصلاحيات (Permissions) والمجموعات", "نوع المتصفح", "حجم الشاشة"],
+        correctAnswer: "الصلاحيات (Permissions) والمجموعات"
+      }
     ]
   }
 ];
-
-export const SYSTEM_INSTRUCTION = `
-You are an expert LMS administrator for United Pharmacies (صيدليات المتحدة).
-Your goal is to help staff use the Moodle LMS based ONLY on the following knowledge base.
-Answer concisely in Arabic.
-
-Knowledge Base:
-${JSON.stringify(TOPICS)}
-
-If the user asks about something not in this list, politely mention you only know about the specific LMS topics listed.
-`;

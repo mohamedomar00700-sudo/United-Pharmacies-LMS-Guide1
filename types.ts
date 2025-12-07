@@ -14,6 +14,12 @@ export interface FAQItem {
   answer: string;
 }
 
+export interface GeneratedQuestion {
+  question: string;
+  options: string[];
+  correctAnswer: string;
+}
+
 export interface TopicData {
   id: TopicId;
   title: string;
@@ -23,17 +29,12 @@ export interface TopicData {
   faq: FAQItem[];
   tips: string[];
   color: string;
+  quizzes: GeneratedQuestion[]; // Added pre-defined quizzes
 }
 
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
-}
-
-export interface GeneratedQuestion {
-  question: string;
-  options: string[];
-  correctAnswer: string;
 }
 
 export interface SearchResult {
