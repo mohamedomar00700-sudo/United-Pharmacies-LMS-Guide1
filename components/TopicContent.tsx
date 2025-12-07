@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TopicData, TopicId } from '../types';
 import { TOPICS } from '../constants';
+import PresentationMode from './PresentationMode'; // Import PresentationMode
 import {
   CheckCircle2,
   HelpCircle,
@@ -17,14 +18,15 @@ import {
   Copy,
   Check,
   ChevronRight,
-  ChevronLeft
+  ChevronLeft,
+  MonitorPlay // Import MonitorPlay icon
 } from 'lucide-react';
 
 interface TopicContentProps {
   topic: TopicData;
   onComplete: (id: TopicId) => void;
-  onSelectTopic: (id: TopicId) => void; // Added for navigation
-  fontScale: number; // Added for accessibility
+  onSelectTopic: (id: TopicId) => void;
+  fontScale: number;
 }
 
 const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelectTopic, fontScale }) => {
@@ -33,6 +35,7 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
   const [showScreenshot, setShowScreenshot] = useState<string | null>(null);
   const [feedbackGiven, setFeedbackGiven] = useState<'up' | 'down' | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [isPresentationMode, setIsPresentationMode] = useState(false); // State for Presentation Mode
 
   // Find Next and Previous Topics
   const currentTopicIndex = TOPICS.findIndex(t => t.id === topic.id);
@@ -48,6 +51,7 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
       setCheckedSteps([]);
     }
     setFeedbackGiven(null);
+    setIsPresentationMode(false); // Close presentation on topic change
     
     // Scroll to top
     if (mainRef.current) {
@@ -75,7 +79,6 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
     setTimeout(() => setCopiedIndex(null), 2000);
   };
 
-  // Helper to determine styles based on topic color
   const getColorClasses = (baseColor: string) => {
     const colors: Record<string, string> = {
       sky: 'bg-sky-100 text-sky-700 border-sky-200 dark:bg-sky-900/30 dark:text-sky-300 dark:border-sky-800',
@@ -84,6 +87,8 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
       purple: 'bg-purple-100 text-purple-700 border-purple-200 dark:bg-purple-900/30 dark:text-purple-300 dark:border-purple-800',
       blue: 'bg-blue-100 text-blue-700 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-800',
       amber: 'bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-800',
+      teal: 'bg-teal-100 text-teal-700 border-teal-200 dark:bg-teal-900/30 dark:text-teal-300 dark:border-teal-800',
+      red: 'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-300 dark:border-red-800',
     };
     return colors[baseColor] || colors.sky;
   };
@@ -115,14 +120,26 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
 
         {/* Header Section */}
         <header className="space-y-4" style={{ animationDelay: '0ms' }}>
-          <div className="flex items-center gap-4">
-            <div className={`p-4 rounded-2xl shadow-sm ${getColorClasses(topic.color)}`}>
-              <topic.icon size={32} />
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-4">
+              <div className={`p-4 rounded-2xl shadow-sm ${getColorClasses(topic.color)}`}>
+                <topic.icon size={32} />
+              </div>
+              <div>
+                <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">{topic.title}</h2>
+                <p className="text-slate-500 dark:text-slate-400 mt-1 text-lg">{topic.description}</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-3xl font-bold text-slate-800 dark:text-slate-100">{topic.title}</h2>
-              <p className="text-slate-500 dark:text-slate-400 mt-1 text-lg">{topic.description}</p>
-            </div>
+
+            {/* Presentation Mode Button */}
+            <button
+              onClick={() => setIsPresentationMode(true)}
+              className="flex flex-col items-center gap-1 p-2 rounded-xl text-slate-500 hover:text-up-blue hover:bg-blue-50 dark:text-slate-400 dark:hover:text-up-teal dark:hover:bg-slate-800 transition-colors"
+              title="عرض تقديمي (Full Screen)"
+            >
+              <MonitorPlay size={24} />
+              <span className="text-[10px] font-bold">عرض</span>
+            </button>
           </div>
           <hr className="border-slate-200 dark:border-slate-700" />
         </header>
@@ -138,7 +155,7 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
         <section className="fade-in-content" style={{ animationDelay: '150ms' }}>
           <div className="flex items-center justify-between mb-6">
             <h3 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-100">
-              <CheckCircle2 className="text-teal-600 dark:text-teal-400" size={24} />
+              <CheckCircle2 className="text-up-teal" size={24} />
               خطوات عملية (Checklist)
             </h3>
             <span className="text-sm text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full">
@@ -165,7 +182,7 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
                       border-4 text-lg font-bold shadow-sm transition-all duration-300
                       hover:scale-110 cursor-pointer
                       ${isChecked
-                        ? 'bg-teal-600 border-teal-100 text-white'
+                        ? 'bg-up-teal border-teal-100 text-white'
                         : 'bg-white dark:bg-slate-800 border-slate-50 dark:border-slate-900 text-slate-600 dark:text-slate-300'
                       }
                     `}
@@ -179,7 +196,7 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
                     p-5 rounded-xl border shadow-sm transition-all duration-200 relative overflow-hidden
                     ${isChecked
                         ? 'bg-slate-50 dark:bg-slate-800/50 border-slate-100 dark:border-slate-700'
-                        : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 hover:shadow-md hover:border-teal-100 dark:hover:border-teal-800'
+                        : 'bg-white dark:bg-slate-800 border-slate-100 dark:border-slate-700 hover:shadow-md hover:border-up-teal/30 dark:hover:border-up-teal/50'
                       }
                   `}
                       onClick={() => window.innerWidth < 768 && toggleStep(index)}
@@ -187,7 +204,7 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
                       {/* Mobile Number/Check */}
                       <div className={`
                       md:hidden absolute top-0 right-0 px-3 py-1 rounded-bl-xl text-xs font-bold 
-                      ${isChecked ? 'bg-teal-100 text-teal-700' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300'}
+                      ${isChecked ? 'bg-up-teal text-white' : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-300'}
                     `}>
                         {isChecked ? <Check size={12} /> : index + 1}
                       </div>
@@ -208,7 +225,7 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
                             e.stopPropagation();
                             setShowScreenshot(step);
                           }}
-                          className="text-slate-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors hidden sm:block"
+                          className="text-slate-400 hover:text-up-teal transition-colors hidden sm:block"
                           title="عرض مثال (Screenshot)"
                         >
                           <ImageIcon size={20} />
@@ -226,7 +243,7 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
         {topic.faq.length > 0 && (
           <section className="fade-in-content" style={{ animationDelay: '300ms' }}>
             <h3 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-100 mb-6">
-              <HelpCircle className="text-blue-500" size={24} />
+              <HelpCircle className="text-up-blue" size={24} />
               الأسئلة الشائعة (FAQ)
             </h3>
             <div className="grid md:grid-cols-2 gap-4">
@@ -238,8 +255,8 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
                   >
                     {copiedIndex === idx ? <Check size={16} /> : <Copy size={16} />}
                   </button>
-                  <h4 className="font-bold text-blue-800 dark:text-blue-300 mb-2 text-sm md:text-base flex items-start gap-2">
-                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
+                  <h4 className="font-bold text-up-blue dark:text-blue-300 mb-2 text-sm md:text-base flex items-start gap-2">
+                    <span className="mt-1 w-1.5 h-1.5 rounded-full bg-up-blue shrink-0"></span>
                     {item.question}
                   </h4>
                   <p className="text-slate-600 dark:text-slate-300 text-sm pr-4 leading-relaxed">
@@ -279,14 +296,14 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
             {prevTopic ? (
                <button 
                  onClick={() => onSelectTopic(prevTopic.id)}
-                 className="flex-1 flex items-center gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-teal-500 dark:hover:border-teal-500 group transition-all"
+                 className="flex-1 flex items-center gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-up-teal dark:hover:border-up-teal group transition-all"
                >
-                 <div className="bg-slate-100 dark:bg-slate-700 p-2 rounded-lg group-hover:bg-teal-50 dark:group-hover:bg-teal-900/30 text-slate-500 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                 <div className="bg-slate-100 dark:bg-slate-700 p-2 rounded-lg group-hover:bg-teal-50 dark:group-hover:bg-teal-900/30 text-slate-500 dark:text-slate-400 group-hover:text-up-teal dark:group-hover:text-teal-400 transition-colors">
                    <ChevronRight size={24} />
                  </div>
                  <div className="text-right">
                    <p className="text-xs text-slate-400">السابق</p>
-                   <p className="font-bold text-slate-700 dark:text-slate-200 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{prevTopic.title}</p>
+                   <p className="font-bold text-slate-700 dark:text-slate-200 group-hover:text-up-teal dark:group-hover:text-teal-400 transition-colors">{prevTopic.title}</p>
                  </div>
                </button>
             ) : <div className="flex-1"></div>}
@@ -294,13 +311,13 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
             {nextTopic ? (
                <button 
                  onClick={() => onSelectTopic(nextTopic.id)}
-                 className="flex-1 flex items-center justify-end gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-teal-500 dark:hover:border-teal-500 group transition-all"
+                 className="flex-1 flex items-center justify-end gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-up-teal dark:hover:border-up-teal group transition-all"
                >
                  <div className="text-left">
                    <p className="text-xs text-slate-400">التالي</p>
-                   <p className="font-bold text-slate-700 dark:text-slate-200 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{nextTopic.title}</p>
+                   <p className="font-bold text-slate-700 dark:text-slate-200 group-hover:text-up-teal dark:group-hover:text-teal-400 transition-colors">{nextTopic.title}</p>
                  </div>
-                 <div className="bg-slate-100 dark:bg-slate-700 p-2 rounded-lg group-hover:bg-teal-50 dark:group-hover:bg-teal-900/30 text-slate-500 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                 <div className="bg-slate-100 dark:bg-slate-700 p-2 rounded-lg group-hover:bg-teal-50 dark:group-hover:bg-teal-900/30 text-slate-500 dark:text-slate-400 group-hover:text-up-teal dark:group-hover:text-teal-400 transition-colors">
                    <ChevronLeft size={24} />
                  </div>
                </button>
@@ -313,7 +330,7 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
           <div className="flex gap-4">
             <button
               onClick={() => setFeedbackGiven('up')}
-              className={`p-3 rounded-full transition-all ${feedbackGiven === 'up' ? 'bg-teal-100 text-teal-600 dark:bg-teal-900 dark:text-teal-400' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'}`}
+              className={`p-3 rounded-full transition-all ${feedbackGiven === 'up' ? 'bg-teal-100 text-up-teal dark:bg-teal-900 dark:text-teal-400' : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700'}`}
             >
               <ThumbsUp size={20} />
             </button>
@@ -325,11 +342,19 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelect
             </button>
           </div>
           {feedbackGiven && (
-            <p className="text-teal-600 dark:text-teal-400 text-xs mt-3 animate-fade-in-up">شكراً لملاحظاتك! سنعمل على تحسين المحتوى.</p>
+            <p className="text-up-teal dark:text-teal-400 text-xs mt-3 animate-fade-in-up">شكراً لملاحظاتك! سنعمل على تحسين المحتوى.</p>
           )}
         </section>
 
       </div>
+
+      {/* Presentation Mode Modal */}
+      {isPresentationMode && (
+        <PresentationMode 
+          topic={topic} 
+          onClose={() => setIsPresentationMode(false)} 
+        />
+      )}
 
       {/* Screenshot Modal (Mock) */}
       {showScreenshot && (

@@ -1,7 +1,7 @@
 import React from 'react';
 import { TOPICS } from '../constants';
 import { TopicId, ProgressMap } from '../types';
-import { ChevronLeft, GraduationCap, CheckCircle } from 'lucide-react';
+import { ChevronLeft, CheckCircle } from 'lucide-react';
 
 interface SidebarProps {
   currentTopic: TopicId;
@@ -33,14 +33,18 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTopic, onSelectTopic, isOpen, 
       >
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="p-6 border-b border-slate-100 dark:border-slate-700 bg-gradient-to-br from-teal-600 to-teal-800 text-white">
+          <div className="p-6 border-b border-slate-100 dark:border-slate-700 bg-up-blue text-white">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-white/20 rounded-lg">
-                <GraduationCap size={24} className="text-white" />
+              <div className="p-2 bg-white rounded-lg shadow-sm">
+                <img 
+                  src="assets/united_pharmacy_logo.png" 
+                  alt="UP Logo" 
+                  className="w-8 h-8 object-contain"
+                />
               </div>
               <div>
-                <h1 className="font-bold text-lg leading-tight">صيدليات المتحدة</h1>
-                <p className="text-xs text-teal-100 opacity-90">LMS Knowledge Base</p>
+                <h1 className="font-bold text-lg leading-tight">صيدلية المتحدة</h1>
+                <p className="text-xs text-slate-200 opacity-90">LMS Knowledge Base</p>
               </div>
             </div>
           </div>
@@ -62,7 +66,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTopic, onSelectTopic, isOpen, 
                   className={`
                     w-full flex items-center gap-4 p-3 rounded-xl text-right transition-all duration-200 group relative
                     ${isActive
-                      ? 'bg-teal-50 dark:bg-teal-900/30 text-teal-700 dark:text-teal-400 shadow-sm ring-1 ring-teal-200 dark:ring-teal-800'
+                      ? 'bg-up-teal/10 text-up-blue dark:bg-up-teal/20 dark:text-up-teal shadow-sm ring-1 ring-up-teal/20 dark:ring-up-teal/50'
                       : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-700 hover:text-slate-900 dark:hover:text-slate-200'
                     }
                   `}
@@ -70,8 +74,8 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTopic, onSelectTopic, isOpen, 
                   <div className={`
                     p-2 rounded-lg transition-colors relative
                     ${isActive
-                      ? 'bg-teal-100 dark:bg-teal-800 text-teal-700 dark:text-teal-300'
-                      : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 group-hover:bg-white dark:group-hover:bg-slate-600 group-hover:text-teal-600 dark:group-hover:text-teal-300 group-hover:shadow-sm'}
+                      ? 'bg-white text-up-teal dark:bg-slate-800 dark:text-up-teal'
+                      : 'bg-slate-100 dark:bg-slate-700 text-slate-500 dark:text-slate-400 group-hover:bg-white dark:group-hover:bg-slate-600 group-hover:text-up-teal dark:group-hover:text-teal-300 group-hover:shadow-sm'}
                   `}>
                     <Icon size={20} />
                     {isCompleted && (
@@ -81,7 +85,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTopic, onSelectTopic, isOpen, 
                     )}
                   </div>
                   <span className="font-medium flex-1 truncate">{topic.title}</span>
-                  {isActive && <ChevronLeft size={16} className="text-teal-500 dark:text-teal-400" />}
+                  {isActive && <ChevronLeft size={16} className="text-up-teal" />}
                 </button>
               );
             })}
@@ -89,7 +93,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTopic, onSelectTopic, isOpen, 
 
           {/* Footer */}
           <div className="p-4 border-t border-slate-100 dark:border-slate-700 text-center text-xs text-slate-400">
-            &copy; {new Date().getFullYear()} United Pharmacies
+            &copy; {new Date().getFullYear()} United Pharmacy
           </div>
         </div>
       </aside>

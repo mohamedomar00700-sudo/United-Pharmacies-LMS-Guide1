@@ -116,7 +116,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
       <div className="bg-white dark:bg-slate-900 w-full max-w-md rounded-2xl shadow-2xl overflow-hidden flex flex-col h-[650px] animate-fade-in-up border border-slate-200 dark:border-slate-700">
 
         {/* Header */}
-        <div className="bg-gradient-to-r from-teal-600 to-teal-500 p-4 flex items-center justify-between shrink-0">
+        <div className="bg-gradient-to-r from-up-blue to-up-teal p-4 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3 text-white">
             <div className="bg-white/20 p-2 rounded-full">
               <Sparkles size={20} />
@@ -138,7 +138,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
         <div className="flex border-b border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
           <button
             onClick={() => setActiveTab('chat')}
-            className={`flex-1 py-3 text-sm font-medium flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'chat' ? 'border-teal-500 text-teal-600 dark:text-teal-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
+            className={`flex-1 py-3 text-sm font-medium flex items-center justify-center gap-2 border-b-2 transition-colors ${activeTab === 'chat' ? 'border-up-teal text-up-teal dark:text-teal-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700'}`}
           >
             <MessageCircle size={16} /> محادثة
           </button>
@@ -165,7 +165,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
                     className={`
                   max-w-[85%] p-3 rounded-2xl text-sm leading-relaxed shadow-sm whitespace-pre-wrap
                   ${msg.role === 'user'
-                        ? 'bg-teal-600 text-white rounded-br-none'
+                        ? 'bg-up-teal text-white rounded-br-none'
                         : 'bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-bl-none'
                       }
                 `}
@@ -177,7 +177,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
                   {msg.role === 'model' && msg.topicId && (
                     <button 
                       onClick={() => handleNavigateClick(msg.topicId!)}
-                      className="mt-2 mr-2 bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-900/30 dark:hover:bg-purple-900/50 dark:text-purple-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors border border-purple-200 dark:border-purple-800"
+                      className="mt-2 mr-2 bg-up-blue/5 hover:bg-up-blue/10 text-up-blue dark:bg-up-teal/10 dark:hover:bg-up-teal/20 dark:text-teal-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors border border-up-blue/10 dark:border-up-teal/30"
                     >
                       <ExternalLink size={14} />
                       الذهاب إلى قسم الشرح
@@ -188,7 +188,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
               {isChatLoading && (
                 <div className="flex justify-start">
                   <div className="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 p-3 rounded-2xl rounded-bl-none shadow-sm flex items-center gap-2">
-                    <Loader2 size={16} className="animate-spin text-teal-600" />
+                    <Loader2 size={16} className="animate-spin text-up-teal" />
                     <span className="text-xs text-slate-500 dark:text-slate-400">جاري البحث...</span>
                   </div>
                 </div>
@@ -262,13 +262,13 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="ابحث في الدليل..."
-                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white focus:border-teal-500 focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-900 outline-none transition-all bg-slate-50"
+                className="w-full px-4 py-3 rounded-xl border border-slate-200 dark:border-slate-700 dark:bg-slate-900 dark:text-white focus:border-up-teal focus:ring-2 focus:ring-teal-100 dark:focus:ring-teal-900 outline-none transition-all bg-slate-50"
                 disabled={isChatLoading}
               />
               <button
                 onClick={handleSendChat}
                 disabled={!input.trim() || isChatLoading}
-                className="p-3 bg-teal-600 text-white rounded-xl hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
+                className="p-3 bg-up-teal text-white rounded-xl hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-sm"
               >
                 <Send size={18} className={document.dir === 'rtl' ? 'rotate-180' : ''} />
               </button>

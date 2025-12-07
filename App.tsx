@@ -201,7 +201,7 @@ const App: React.FC = () => {
                       }}
                       className="w-full text-right p-3 hover:bg-slate-50 dark:hover:bg-slate-700 border-b border-slate-50 dark:border-slate-700 last:border-0 flex flex-col"
                     >
-                      <span className="text-xs font-bold text-teal-600 dark:text-teal-400">{res.topicTitle}</span>
+                      <span className="text-xs font-bold text-up-teal dark:text-up-teal">{res.topicTitle}</span>
                       <span className="text-sm text-slate-600 dark:text-slate-300 truncate w-full">{res.text}</span>
                     </button>
                   ))}
@@ -211,7 +211,7 @@ const App: React.FC = () => {
 
             <button
               onClick={toggleDarkMode}
-              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-yellow-400 transition-colors"
+              className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-700 text-slate-600 dark:text-up-orange transition-colors"
             >
               {darkMode ? <Sun size={20} /> : <Moon size={20} />}
             </button>
@@ -226,12 +226,12 @@ const App: React.FC = () => {
           fontScale={fontScale}
         />
 
-        {/* Floating AI Button */}
+        {/* Floating AI Button - Updated Brand Colors */}
         <button
           onClick={() => setIsChatOpen(true)}
-          className="fixed bottom-6 left-6 md:bottom-10 md:left-10 z-40 group flex items-center gap-2 bg-gradient-to-r from-indigo-600 to-purple-600 text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 ring-2 ring-white/50 dark:ring-slate-800/50"
+          className="fixed bottom-6 left-6 md:bottom-10 md:left-10 z-40 group flex items-center gap-2 bg-gradient-to-r from-up-blue to-up-teal text-white px-4 py-3 rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300 ring-2 ring-white/50 dark:ring-slate-800/50"
         >
-          <Sparkles className="animate-pulse" size={20} />
+          <Sparkles className="animate-pulse text-up-orange" size={20} />
           <span className="font-bold text-sm hidden sm:inline">مساعد الذكاء الاصطناعي</span>
         </button>
 
