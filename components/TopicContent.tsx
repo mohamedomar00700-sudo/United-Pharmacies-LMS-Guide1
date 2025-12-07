@@ -97,10 +97,10 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete }) => {
 
   return (
     <main ref={mainRef} className="flex-1 h-full overflow-y-auto bg-slate-50/50 dark:bg-slate-900 p-6 md:p-12 scroll-smooth transition-colors duration-300">
-      <div key={topic.id} className="max-w-4xl mx-auto space-y-10 pb-20">
+      <div key={topic.id} className="max-w-4xl mx-auto space-y-10 pb-20 fade-in-content">
 
         {/* Header Section */}
-        <header className="space-y-4 animate-fade-in-up" style={{ animationDelay: '0ms' }}>
+        <header className="space-y-4" style={{ animationDelay: '0ms' }}>
           <div className="flex items-center gap-4">
             <div className={`p-4 rounded-2xl shadow-sm ${getColorClasses(topic.color)}`}>
               <topic.icon size={32} />
@@ -115,13 +115,13 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete }) => {
 
         {/* Special Upload Icons if active */}
         {topic.id === TopicId.UPLOAD && (
-          <div className="animate-fade-in-up" style={{ animationDelay: '100ms' }}>
+          <div className="fade-in-content" style={{ animationDelay: '100ms' }}>
             {renderUploadIcons()}
           </div>
         )}
 
         {/* Steps Section */}
-        <section className="animate-fade-in-up" style={{ animationDelay: '150ms' }}>
+        <section className="fade-in-content" style={{ animationDelay: '150ms' }}>
           <div className="flex items-center justify-between mb-6">
             <h3 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-100">
               <CheckCircle2 className="text-teal-600 dark:text-teal-400" size={24} />
@@ -210,7 +210,7 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete }) => {
 
         {/* FAQ Section */}
         {topic.faq.length > 0 && (
-          <section className="animate-fade-in-up" style={{ animationDelay: '300ms' }}>
+          <section className="fade-in-content" style={{ animationDelay: '300ms' }}>
             <h3 className="flex items-center gap-2 text-xl font-bold text-slate-800 dark:text-slate-100 mb-6">
               <HelpCircle className="text-blue-500" size={24} />
               الأسئلة الشائعة (FAQ)
@@ -238,7 +238,7 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete }) => {
         )}
 
         {/* Tips Section */}
-        <section className="animate-fade-in-up" style={{ animationDelay: '450ms' }}>
+        <section className="fade-in-content" style={{ animationDelay: '450ms' }}>
           <div className="bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-900/20 dark:to-orange-900/20 border border-amber-100 dark:border-amber-800/50 rounded-2xl p-6 relative overflow-hidden">
             {/* Decoration Icon */}
             <Lightbulb className="absolute -left-4 -top-4 text-amber-200 dark:text-amber-800 opacity-50 rotate-12" size={100} />
