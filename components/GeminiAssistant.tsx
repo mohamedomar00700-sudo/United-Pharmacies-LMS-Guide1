@@ -1,19 +1,20 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send, Loader2, Sparkles, Mic, BrainCircuit, MessageCircle } from 'lucide-react';
-import { ChatMessage, GeneratedQuestion, TopicData } from '../types';
+import { X, Send, Loader2, Sparkles, Mic, BrainCircuit, MessageCircle, ExternalLink } from 'lucide-react';
+import { ChatMessage, GeneratedQuestion, TopicData, TopicId } from '../types';
 import { sendMessageToGemini, generateQuizQuestions } from '../services/geminiService';
 
 interface GeminiAssistantProps {
   isOpen: boolean;
   onClose: () => void;
   currentTopic: TopicData;
+  onNavigate: (id: TopicId) => void; // Added prop
 }
 
-const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, currentTopic }) => {
+const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, currentTopic, onNavigate }) => {
   const [activeTab, setActiveTab] = useState<'chat' | 'quiz'>('chat');
   // Chat State
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'model', text: 'مرحباً بك! أنا المساعد الآلي لصيدليات المتحدة. ابحث عن أي خطوة أو معلومة وسأساعدك فوراً.' }
+    { role: 'model', text: 'مرحباً بك! أنا المساعد الآلي. ابحث عن أي موضوع (مثل "رفع فيديو" أو "التقارير") وسأوجهك للخطوات الصحيحة.' }
   ]);
   const [input, setInput] = useState('');
   const [isChatLoading, setIsChatLoading] = useState(false);
@@ -50,10 +51,19 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
     setIsChatLoading(true);
 
     // Send with context
-    const responseText = await sendMessageToGemini(input, currentTopic);
+    const response = await sendMessageToGemini(input, currentTopic);
 
-    setMessages(prev => [...prev, { role: 'model', text: responseText }]);
+    setMessages(prev => [...prev, { 
+      role: 'model', 
+      text: response.text,
+      topicId: response.topicId 
+    }]);
     setIsChatLoading(false);
+  };
+
+  const handleNavigateClick = (id: TopicId) => {
+    onNavigate(id);
+    onClose();
   };
 
   const handleGenerateQuiz = async () => {
@@ -149,7 +159,7 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
               {messages.map((msg, idx) => (
                 <div
                   key={idx}
-                  className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}
+                  className={`flex flex-col ${msg.role === 'user' ? 'items-end' : 'items-start'}`}
                 >
                   <div
                     className={`
@@ -162,6 +172,17 @@ const GeminiAssistant: React.FC<GeminiAssistantProps> = ({ isOpen, onClose, curr
                   >
                     {msg.text}
                   </div>
+                  
+                  {/* Navigation Button Action */}
+                  {msg.role === 'model' && msg.topicId && (
+                    <button 
+                      onClick={() => handleNavigateClick(msg.topicId!)}
+                      className="mt-2 mr-2 bg-purple-100 hover:bg-purple-200 text-purple-700 dark:bg-purple-900/30 dark:hover:bg-purple-900/50 dark:text-purple-300 px-4 py-2 rounded-xl text-xs font-bold flex items-center gap-2 transition-colors border border-purple-200 dark:border-purple-800"
+                    >
+                      <ExternalLink size={14} />
+                      الذهاب إلى قسم الشرح
+                    </button>
+                  )}
                 </div>
               ))}
               {isChatLoading && (

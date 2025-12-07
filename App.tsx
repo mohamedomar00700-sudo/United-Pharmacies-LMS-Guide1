@@ -242,6 +242,7 @@ const App: React.FC = () => {
         isOpen={isChatOpen}
         onClose={() => setIsChatOpen(false)}
         currentTopic={currentTopic}
+        onNavigate={setCurrentTopicId} // Pass navigation handler
       />
     </div>
   );

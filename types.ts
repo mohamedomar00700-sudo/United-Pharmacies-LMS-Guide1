@@ -35,6 +35,7 @@ export interface TopicData {
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
+  topicId?: TopicId; // Added for navigation
 }
 
 export interface SearchResult {
