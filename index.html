@@ -119,16 +119,15 @@
       white-space: pre-wrap;
     }
   </style>
+  <!-- Removed static import map to prevent conflicts. The loader script below handles everything. -->
 <script type="importmap">
 {
   "imports": {
-    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.1/client",
-    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
     "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
     "react/": "https://aistudiocdn.com/react@^19.2.1/",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/"
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0"
   }
 }
 </script>
@@ -152,7 +151,8 @@
       "react": "https://aistudiocdn.com/react@^19.2.1",
       "react/": "https://aistudiocdn.com/react@^19.2.1/",
       "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.1/client",
-      "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1"
+      "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1",
+      "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/"
     };
 
     // Project Files Mapping - Using bare specifiers (no leading slash)
@@ -223,7 +223,7 @@
            try {
              transpiledFiles[key] = Babel.transform(code, {
                presets: ['react', 'typescript'],
-               filename: filename, // CRITICAL FIX: Pass the actual filename with extension (e.g., ./types.ts)
+               filename: filename, 
                sourceMaps: false
              }).code;
            } catch (e) {
@@ -236,6 +236,7 @@
         
         for (const [path, code] of Object.entries(transpiledFiles)) {
            // Rewrite relative imports to bare specifier paths matching our keys
+           // Matches: from './...' or from "../..."
            let finalCode = code.replace(/from\s+['"](\..*?)['"]/g, (match, importPath) => {
              const resolved = resolvePath(path, importPath);
              return `from "${resolved}"`;
