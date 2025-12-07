@@ -20,9 +20,24 @@
       }
     }
   </script>
+  
+  <!-- Polyfill for process.env -->
+  <script>
+    window.process = {
+      env: {
+        API_KEY: '', 
+        NODE_ENV: 'production'
+      }
+    };
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+  
+  <!-- Babel for browser-side transpilation -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
   <style>
     body {
       font-family: 'Cairo', sans-serif;
@@ -48,10 +63,10 @@
       background: #94a3b8;
     }
 
-    /* Reliable CSS Animation */
+    /* Animation Classes */
     .fade-in-content {
       animation: fadeInUp 0.5s ease-out forwards;
-      opacity: 0; /* Start hidden */
+      opacity: 0;
     }
     
     @keyframes fadeInUp {
@@ -64,22 +79,201 @@
         transform: translateY(0);
       }
     }
+
+    #loading-screen {
+      position: fixed;
+      inset: 0;
+      background: #f8fafc;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      font-family: 'Cairo', sans-serif;
+    }
+    .dark #loading-screen {
+      background: #0f172a;
+      color: white;
+    }
+    .loader {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #0d9488;
+      border-bottom-color: transparent;
+      border-radius: 50%;
+      animation: rotation 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+    @keyframes rotation {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .error-msg {
+      color: #ef4444;
+      background: #fee2e2;
+      padding: 1rem;
+      border-radius: 0.5rem;
+      max-width: 90%;
+      text-align: center;
+      direction: ltr;
+      white-space: pre-wrap;
+    }
   </style>
 <script type="importmap">
 {
   "imports": {
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
-    "react": "https://aistudiocdn.com/react@^19.2.0",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+    "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.1/client",
+    "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1",
+    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+    "react": "https://aistudiocdn.com/react@^19.2.1",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/"
   }
 }
 </script>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased dark:bg-slate-900 dark:text-slate-100 transition-colors duration-300">
+  
+  <div id="loading-screen">
+    <div class="loader"></div>
+    <p>جاري تحميل التطبيق...</p>
+    <p class="text-xs text-slate-500 mt-2">يرجى الانتظار...</p>
+  </div>
+
   <div id="root"></div>
-  <!-- Entry point for the application -->
-  <script type="module" src="./index.tsx"></script>
+
+  <!-- Application Loader Script -->
+  <script>
+    // External Dependencies
+    const externalImports = {
+      "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+      "lucide-react": "https://aistudiocdn.com/lucide-react@^0.556.0",
+      "react": "https://aistudiocdn.com/react@^19.2.1",
+      "react/": "https://aistudiocdn.com/react@^19.2.1/",
+      "react-dom/client": "https://aistudiocdn.com/react-dom@^19.2.1/client",
+      "react-dom": "https://aistudiocdn.com/react-dom@^19.2.1"
+    };
+
+    // Project Files Mapping - Using bare specifiers (no leading slash)
+    const projectFiles = {
+      'types': './types.ts',
+      'constants': './constants.tsx',
+      'services/geminiService': './services/geminiService.ts',
+      'components/Sidebar': './components/Sidebar.tsx',
+      'components/TopicContent': './components/TopicContent.tsx',
+      'components/GeminiAssistant': './components/GeminiAssistant.tsx',
+      'App': './App.tsx',
+      'index': './index.tsx'
+    };
+
+    function resolvePath(base, relative) {
+      const stack = base.split('/');
+      stack.pop(); 
+      const parts = relative.split('/');
+      for (const part of parts) {
+        if (part === '.') continue;
+        if (part === '..') {
+          if (stack.length > 0) stack.pop();
+        } else {
+          stack.push(part);
+        }
+      }
+      return stack.join('/');
+    }
+
+    async function fetchWithRetry(url, retries = 3) {
+      for (let i = 0; i < retries; i++) {
+        try {
+          // Cache busting
+          const fetchUrl = (i === 0) ? `${url}?t=${Date.now()}` : url;
+          const res = await fetch(fetchUrl);
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          
+          const text = await res.text();
+          if (text.trim().startsWith('<!DOCTYPE html>')) {
+             throw new Error('Received HTML instead of code (File not found or soft 404)');
+          }
+          return text;
+        } catch (err) {
+          console.warn(`Attempt ${i+1} failed for ${url}: ${err.message}`);
+          if (i === retries - 1) throw err;
+          await new Promise(r => setTimeout(r, 500));
+        }
+      }
+    }
+
+    async function loadApp() {
+      const loadingEl = document.getElementById('loading-screen');
+      try {
+        // 1. Fetch all local files
+        const fileContents = {};
+        for (const [key, url] of Object.entries(projectFiles)) {
+          try {
+            fileContents[key] = await fetchWithRetry(url);
+          } catch (err) {
+            throw new Error(`Failed to load ${url}: ${err.message}`);
+          }
+        }
+
+        // 2. Transpile TSX/TS to JS
+        const transpiledFiles = {};
+        for (const [key, code] of Object.entries(fileContents)) {
+           const filename = projectFiles[key]; 
+           try {
+             transpiledFiles[key] = Babel.transform(code, {
+               presets: ['react', 'typescript'],
+               filename: filename, // CRITICAL FIX: Pass the actual filename with extension (e.g., ./types.ts)
+               sourceMaps: false
+             }).code;
+           } catch (e) {
+             throw new Error(`Babel Error in ${filename}: ${e.message}`);
+           }
+        }
+
+        // 3. Create Import Map with Blob URLs
+        const finalImports = { ...externalImports };
+        
+        for (const [path, code] of Object.entries(transpiledFiles)) {
+           // Rewrite relative imports to bare specifier paths matching our keys
+           let finalCode = code.replace(/from\s+['"](\..*?)['"]/g, (match, importPath) => {
+             const resolved = resolvePath(path, importPath);
+             return `from "${resolved}"`;
+           });
+           
+           const blob = new Blob([finalCode], { type: 'application/javascript' });
+           finalImports[path] = URL.createObjectURL(blob);
+        }
+
+        // 4. Inject Import Map
+        const mapScript = document.createElement('script');
+        mapScript.type = "importmap";
+        mapScript.textContent = JSON.stringify({ imports: finalImports });
+        document.head.appendChild(mapScript);
+
+        // 5. Start Application
+        // Use the bare specifier 'index'
+        await import(finalImports['index']);
+        
+        // Hide loader only if no errors occurred during import
+        loadingEl.style.display = 'none';
+
+      } catch (e) {
+        console.error(e);
+        loadingEl.innerHTML = `
+          <div class="error-msg">
+            <h3 class="font-bold text-lg mb-2">حدث خطأ أثناء التحميل</h3>
+            <p class="font-mono text-sm break-all">${e.message}</p>
+            <p class="text-xs mt-2 text-slate-600">
+               تأكد من أن جميع الملفات مرفوعة، وأن ملف <code>.nojekyll</code> موجود في الجذر.
+            </p>
+            <button onclick="location.reload()" class="mt-4 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700">إعادة المحاولة</button>
+          </div>
+        `;
+      }
+    }
+
+    loadApp();
+  </script>
 </body>
 </html>
