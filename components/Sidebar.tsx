@@ -37,7 +37,7 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTopic, onSelectTopic, isOpen, 
             <div className="flex items-center gap-3">
               <div className="p-2 bg-white rounded-lg shadow-sm">
                 <img 
-                  src="assets/united_pharmacy_logo.png" 
+                  src="/united_pharmacy_logo.png" 
                   alt="UP Logo" 
                   className="w-8 h-8 object-contain"
                 />
