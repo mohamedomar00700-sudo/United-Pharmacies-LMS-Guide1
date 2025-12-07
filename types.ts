@@ -6,6 +6,8 @@ export enum TopicId {
   QUIZ_SETUP = 'quiz_setup',
   REPORTS = 'reports',
   USERS = 'users',
+  CERTIFICATES = 'certificates', // New
+  MOBILE_APP = 'mobile_app',     // New
   TROUBLESHOOTING = 'troubleshooting',
 }
 
@@ -29,13 +31,13 @@ export interface TopicData {
   faq: FAQItem[];
   tips: string[];
   color: string;
-  quizzes: GeneratedQuestion[]; // Added pre-defined quizzes
+  quizzes: GeneratedQuestion[];
 }
 
 export interface ChatMessage {
   role: 'user' | 'model';
   text: string;
-  topicId?: TopicId; // Added for navigation
+  topicId?: TopicId;
 }
 
 export interface SearchResult {

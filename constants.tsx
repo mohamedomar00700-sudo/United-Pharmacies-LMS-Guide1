@@ -4,7 +4,9 @@ import {
   FileQuestion,
   BarChart3,
   Users,
-  AlertTriangle
+  AlertTriangle,
+  Award,
+  Smartphone
 } from 'lucide-react';
 import { TopicData, TopicId } from './types';
 
@@ -144,6 +146,45 @@ export const TOPICS: TopicData[] = [
     ]
   },
   {
+    id: TopicId.CERTIFICATES,
+    title: "الشهادات والدرجات",
+    description: "كيفية إعداد شهادات الإتمام وسجل الدرجات.",
+    icon: Award,
+    color: "amber",
+    steps: [
+      "أضف نشاط 'Certificate' أو 'Custom Certificate' في نهاية الكورس.",
+      "اضبط شرط الإصدار (Restrict Access): يجب الحصول على درجة النجاح في الاختبار النهائي.",
+      "قم بتصميم الشهادة (إضافة اللوجو، اسم المستخدم، التاريخ).",
+      "اذهب إلى Gradebook Setup لضبط الأوزان النسبية للدرجات (Weights).",
+      "تأكد من تفعيل 'Completion Tracking' للكورس بالكامل."
+    ],
+    faq: [
+      {
+        question: "لماذا لا تظهر الشهادة للمتدرب؟",
+        answer: "غالباً لأنه لم يحقق شرط النجاح في الاختبار أو لم يكمل جميع الأنشطة المطلوبة."
+      },
+      {
+        question: "كيف أحمل كشف درجات كامل؟",
+        answer: "من قائمة Grades > Export > Excel Spreadsheet."
+      }
+    ],
+    tips: [
+      "اجعل الشهادة تُرسل تلقائياً للإيميل فور صدورها لزيادة شعور الموظف بالإنجاز."
+    ],
+    quizzes: [
+      {
+        question: "ما هو الشرط الأساسي لإصدار الشهادة تلقائياً؟",
+        options: ["دفع الرسوم", "تحقيق شرط النجاح (Restrict Access)", "إرسال طلب للمدير", "طباعة الصفحة"],
+        correctAnswer: "تحقيق شرط النجاح (Restrict Access)"
+      },
+      {
+        question: "من أين يمكنك تعديل أوزان الدرجات؟",
+        options: ["Gradebook Setup", "User Profile", "Dashboard", "Calendar"],
+        correctAnswer: "Gradebook Setup"
+      }
+    ]
+  },
+  {
     id: TopicId.REPORTS,
     title: "استخراج التقارير",
     description: "متابعة أداء الموظفين ونسب إكمال الكورسات.",
@@ -216,11 +257,50 @@ export const TOPICS: TopicData[] = [
     ]
   },
   {
+    id: TopicId.MOBILE_APP,
+    title: "تطبيق الهاتف",
+    description: "إعداد واستخدام تطبيق Moodle للجوال.",
+    icon: Smartphone,
+    color: "teal",
+    steps: [
+      "حمل تطبيق 'Moodle' من App Store أو Google Play.",
+      "افتح التطبيق وأدخل رابط المنصة الخاصة بك (يختلف الرابط حسب المنصة، راجع الإدارة المختصة).",
+      "أدخل اسم المستخدم وكلمة المرور الخاصة بك.",
+      "يمكنك تصفح المحتوى وتحميله للمشاهدة بدون إنترنت (Offline Mode).",
+      "ستصلك إشعارات (Notifications) عند إضافة كورس جديد."
+    ],
+    faq: [
+      {
+        question: "هل يعمل التطبيق بدون إنترنت؟",
+        answer: "نعم، بشرط تحميل محتوى الكورس مسبقاً أثناء الاتصال بالواي فاي."
+      },
+      {
+        question: "هل يمكن حل الاختبارات من الموبايل؟",
+        answer: "نعم، التطبيق يدعم جميع أنواع الأسئلة تقريباً."
+      }
+    ],
+    tips: [
+      "تأكد من تحديث التطبيق بانتظام للحصول على أفضل أداء وتجنب الأخطاء."
+    ],
+    quizzes: [
+      {
+        question: "ما هو أول شيء يطلبه التطبيق بعد التحميل؟",
+        options: ["رقم الهوية", "رابط الموقع (Site URL)", "صورة شخصية", "الموقع الجغرافي"],
+        correctAnswer: "رابط الموقع (Site URL)"
+      },
+      {
+        question: "ما الميزة الرئيسية لاستخدام التطبيق؟",
+        options: ["التعلم Offline والإشعارات", "تصميم الجرافيك", "طباعة الشهادات", "لا توجد ميزة"],
+        correctAnswer: "التعلم Offline والإشعارات"
+      }
+    ]
+  },
+  {
     id: TopicId.TROUBLESHOOTING,
     title: "حل المشكلات",
     description: "دليل سريع للمشاكل التقنية الشائعة وحلولها.",
     icon: AlertTriangle,
-    color: "amber",
+    color: "red",
     steps: [
       "فيديو لا يعمل -> تحقق من نوع الملف (MP4 يفضل) والحجم.",
       "المستخدم لا يرى الكورس -> تحقق من إضافته للـ Group الصحيحة أو الـ Permissions.",
