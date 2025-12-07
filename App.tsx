@@ -4,7 +4,7 @@ import TopicContent from './components/TopicContent';
 import GeminiAssistant from './components/GeminiAssistant';
 import { TOPICS } from './constants';
 import { TopicId, SearchResult, ProgressMap } from './types';
-import { Menu, Sparkles, Search, Moon, Sun, X } from 'lucide-react';
+import { Menu, Sparkles, Search, Moon, Sun, X, Type, Minus, Plus } from 'lucide-react';
 
 const App: React.FC = () => {
   const [currentTopicId, setCurrentTopicId] = useState<TopicId>(TopicId.UPLOAD);
@@ -17,6 +17,9 @@ const App: React.FC = () => {
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [progress, setProgress] = useState<ProgressMap>({});
+  
+  // Accessibility State (Font Size: 1 = normal)
+  const [fontScale, setFontScale] = useState(1);
 
   // Init logic (Dark mode & Progress)
   useEffect(() => {
@@ -57,6 +60,14 @@ const App: React.FC = () => {
 
   const handleTopicComplete = (id: TopicId) => {
     setProgress(prev => ({ ...prev, [id]: true }));
+  };
+
+  const adjustFontSize = (delta: number) => {
+    setFontScale(prev => {
+      const newScale = prev + delta;
+      // Clamp between 0.8 and 1.4
+      return Math.min(Math.max(newScale, 0.8), 1.4);
+    });
   };
 
   const handleSearch = (query: string) => {
@@ -121,8 +132,30 @@ const App: React.FC = () => {
             {currentTopic.title}
           </div>
 
-          {/* Actions (Search + Theme) */}
+          {/* Actions (Search + Theme + Font) */}
           <div className="flex items-center gap-2">
+            
+            {/* Font Size Control (New Feature) */}
+            <div className="hidden sm:flex items-center bg-slate-100 dark:bg-slate-700 rounded-lg p-1 mr-2">
+               <button 
+                 onClick={() => adjustFontSize(-0.1)} 
+                 className="p-1 hover:bg-white dark:hover:bg-slate-600 rounded text-slate-600 dark:text-slate-300 transition-colors"
+                 title="تصغير الخط"
+               >
+                 <Minus size={14} />
+               </button>
+               <span className="px-2 text-xs font-bold text-slate-500 dark:text-slate-400 select-none">
+                 <Type size={16} />
+               </span>
+               <button 
+                 onClick={() => adjustFontSize(0.1)} 
+                 className="p-1 hover:bg-white dark:hover:bg-slate-600 rounded text-slate-600 dark:text-slate-300 transition-colors"
+                 title="تكبير الخط"
+               >
+                 <Plus size={14} />
+               </button>
+            </div>
+
             {/* Search Bar Container */}
             <div className="relative">
               <div className={`flex items-center bg-slate-100 dark:bg-slate-700 rounded-lg transition-all duration-300 ${isSearchOpen ? 'w-48 md:w-64 px-3' : 'w-10 justify-center bg-transparent dark:bg-transparent'}`}>
@@ -180,6 +213,8 @@ const App: React.FC = () => {
         <TopicContent
           topic={currentTopic}
           onComplete={handleTopicComplete}
+          onSelectTopic={setCurrentTopicId}
+          fontScale={fontScale}
         />
 
         {/* Floating AI Button */}

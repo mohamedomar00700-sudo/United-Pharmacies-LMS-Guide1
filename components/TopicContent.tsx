@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { TopicData, TopicId } from '../types';
+import { TOPICS } from '../constants';
 import {
   CheckCircle2,
   HelpCircle,
@@ -14,20 +15,29 @@ import {
   ThumbsUp,
   ThumbsDown,
   Copy,
-  Check
+  Check,
+  ChevronRight,
+  ChevronLeft
 } from 'lucide-react';
 
 interface TopicContentProps {
   topic: TopicData;
   onComplete: (id: TopicId) => void;
+  onSelectTopic: (id: TopicId) => void; // Added for navigation
+  fontScale: number; // Added for accessibility
 }
 
-const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete }) => {
+const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete, onSelectTopic, fontScale }) => {
   const mainRef = useRef<HTMLElement>(null);
   const [checkedSteps, setCheckedSteps] = useState<number[]>([]);
   const [showScreenshot, setShowScreenshot] = useState<string | null>(null);
   const [feedbackGiven, setFeedbackGiven] = useState<'up' | 'down' | null>(null);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+
+  // Find Next and Previous Topics
+  const currentTopicIndex = TOPICS.findIndex(t => t.id === topic.id);
+  const prevTopic = currentTopicIndex > 0 ? TOPICS[currentTopicIndex - 1] : null;
+  const nextTopic = currentTopicIndex < TOPICS.length - 1 ? TOPICS[currentTopicIndex + 1] : null;
 
   // Reset state when topic changes
   useEffect(() => {
@@ -96,7 +106,11 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete }) => {
   );
 
   return (
-    <main ref={mainRef} className="flex-1 h-full overflow-y-auto bg-slate-50/50 dark:bg-slate-900 p-6 md:p-12 scroll-smooth transition-colors duration-300">
+    <main 
+      ref={mainRef} 
+      className="flex-1 h-full overflow-y-auto bg-slate-50/50 dark:bg-slate-900 p-6 md:p-12 scroll-smooth transition-colors duration-300"
+      style={{ fontSize: `${fontScale}rem` }}
+    >
       <div key={topic.id} className="max-w-4xl mx-auto space-y-10 pb-20 fade-in-content">
 
         {/* Header Section */}
@@ -260,8 +274,41 @@ const TopicContent: React.FC<TopicContentProps> = ({ topic, onComplete }) => {
           </div>
         </section>
 
+        {/* Navigation Buttons (New Feature) */}
+        <section className="flex flex-col md:flex-row gap-4 pt-8 border-t border-slate-200 dark:border-slate-700">
+            {prevTopic ? (
+               <button 
+                 onClick={() => onSelectTopic(prevTopic.id)}
+                 className="flex-1 flex items-center gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-teal-500 dark:hover:border-teal-500 group transition-all"
+               >
+                 <div className="bg-slate-100 dark:bg-slate-700 p-2 rounded-lg group-hover:bg-teal-50 dark:group-hover:bg-teal-900/30 text-slate-500 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                   <ChevronRight size={24} />
+                 </div>
+                 <div className="text-right">
+                   <p className="text-xs text-slate-400">السابق</p>
+                   <p className="font-bold text-slate-700 dark:text-slate-200 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{prevTopic.title}</p>
+                 </div>
+               </button>
+            ) : <div className="flex-1"></div>}
+
+            {nextTopic ? (
+               <button 
+                 onClick={() => onSelectTopic(nextTopic.id)}
+                 className="flex-1 flex items-center justify-end gap-3 p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 hover:border-teal-500 dark:hover:border-teal-500 group transition-all"
+               >
+                 <div className="text-left">
+                   <p className="text-xs text-slate-400">التالي</p>
+                   <p className="font-bold text-slate-700 dark:text-slate-200 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">{nextTopic.title}</p>
+                 </div>
+                 <div className="bg-slate-100 dark:bg-slate-700 p-2 rounded-lg group-hover:bg-teal-50 dark:group-hover:bg-teal-900/30 text-slate-500 dark:text-slate-400 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors">
+                   <ChevronLeft size={24} />
+                 </div>
+               </button>
+            ) : <div className="flex-1"></div>}
+        </section>
+
         {/* Feedback Section */}
-        <section className="flex flex-col items-center justify-center pt-8 border-t border-slate-200 dark:border-slate-700">
+        <section className="flex flex-col items-center justify-center pt-8">
           <p className="text-slate-500 dark:text-slate-400 mb-4 text-sm">هل كان هذا المحتوى مفيداً؟</p>
           <div className="flex gap-4">
             <button
