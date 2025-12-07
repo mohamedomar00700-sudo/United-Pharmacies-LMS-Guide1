@@ -26,17 +26,17 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
         
         {/* Logo Container */}
         <div className="mb-8 relative group">
-           <div className="absolute inset-0 bg-white/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
-           <div className="relative bg-white p-6 rounded-3xl shadow-2xl transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+           {/* Removed the large white box and halo effects */}
+           <div className="relative transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
              {/* United Pharmacy Logo - Public Folder Path */}
              <img 
                src="public/united_pharmacy_logo.png" 
                alt="United Pharmacy Logo" 
-               className="w-48 h-auto object-contain"
+               className="w-48 h-auto object-contain drop-shadow-xl"
              />
            </div>
            {/* Floating Sparkle */}
-           <div className="absolute -top-4 -right-4 bg-up-orange text-white p-2 rounded-full shadow-lg animate-bounce">
+           <div className="absolute -top-2 -right-2 bg-up-orange text-white p-2 rounded-full shadow-lg animate-bounce">
              <Sparkles size={20} />
            </div>
         </div>

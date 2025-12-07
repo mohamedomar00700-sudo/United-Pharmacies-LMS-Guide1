@@ -35,11 +35,12 @@ const Sidebar: React.FC<SidebarProps> = ({ currentTopic, onSelectTopic, isOpen, 
           {/* Header */}
           <div className="p-6 border-b border-slate-100 dark:border-slate-700 bg-up-blue text-white">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-white rounded-lg shadow-sm">
+              {/* Removed bg-white and padding to show logo on blue background */}
+              <div className="rounded-lg">
                 <img 
                   src="public/united_pharmacy_logo.png" 
                   alt="UP Logo" 
-                  className="w-8 h-8 object-contain"
+                  className="w-10 h-10 object-contain drop-shadow-sm"
                 />
               </div>
               <div>
