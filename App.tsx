@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react';
 import Sidebar from './components/Sidebar';
 import TopicContent from './components/TopicContent';
 import GeminiAssistant from './components/GeminiAssistant';
+import WelcomeScreen from './components/WelcomeScreen'; // Import Welcome Screen
 import { TOPICS } from './constants';
 import { TopicId, SearchResult, ProgressMap } from './types';
 import { Menu, Sparkles, Search, Moon, Sun, X, Type, Minus, Plus } from 'lucide-react';
 
 const App: React.FC = () => {
+  // Splash Screen State
+  const [showSplash, setShowSplash] = useState(true);
+
   const [currentTopicId, setCurrentTopicId] = useState<TopicId>(TopicId.UPLOAD);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
@@ -101,8 +105,13 @@ const App: React.FC = () => {
 
   const currentTopic = TOPICS.find(t => t.id === currentTopicId) || TOPICS[0];
 
+  // Render Welcome Screen if active
+  if (showSplash) {
+    return <WelcomeScreen onStart={() => setShowSplash(false)} />;
+  }
+
   return (
-    <div className="flex h-screen bg-slate-100 dark:bg-slate-900 overflow-hidden font-cairo transition-colors duration-300">
+    <div className="flex h-screen bg-slate-100 dark:bg-slate-900 overflow-hidden font-cairo transition-colors duration-300 animate-fade-in-up">
       {/* Sidebar */}
       <Sidebar
         currentTopic={currentTopicId}
