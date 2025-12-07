@@ -28,9 +28,9 @@ const WelcomeScreen: React.FC<WelcomeScreenProps> = ({ onStart }) => {
         <div className="mb-8 relative group">
            <div className="absolute inset-0 bg-white/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
            <div className="relative bg-white p-6 rounded-3xl shadow-2xl transform group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
-             {/* United Pharmacy Logo - Root Path */}
+             {/* United Pharmacy Logo - Public Folder Path */}
              <img 
-               src="/united_pharmacy_logo.png" 
+               src="public/united_pharmacy_logo.png" 
                alt="United Pharmacy Logo" 
                className="w-48 h-auto object-contain"
              />
